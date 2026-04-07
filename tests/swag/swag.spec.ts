@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { ENV } from '../../config/env';
+import { addProductList, removeProductList} from '../../test-data/product';
 
 
 test.describe("Inventory Feature", async () => {
     test.beforeEach("Sort products by price (low to high)", async ({ page }) => {
-        await page.goto('https://www.saucedemo.com/');
+        await page.goto(ENV.BASE_URL);
 
   await page.locator('#user-name').fill('standard_user');
   await page.locator('#password').fill('secret_sauce');
@@ -19,10 +21,10 @@ test.describe("Inventory Feature", async () => {
         expect(prices).toEqual(sortedPrices)
     })
     test("Add a product to the cart", async ({ page }) => {
-        let productList = ["Sauce Labs Backpack", "Sauce Labs Onesie", "Test.allTheThings() T-Shirt (Red)"];
+       
     
-        await page.goto("https://www.saucedemo.com/inventory.html")
-        for (const product of productList) {
+     await page.goto("https://www.saucedemo.com/inventory.html")
+        for (const product of addProductList) {
             await page.getByText(product).click()
             await page.getByRole("button", { name: "Add to cart" }).click()
             await page.getByRole("button", { name: "Go back Back to products" }).click()
@@ -30,18 +32,18 @@ test.describe("Inventory Feature", async () => {
         await page.locator("[data-test='shopping-cart-badge']").click()
         let allProductNames = await page.locator("[data-test='inventory-item-name']").allInnerTexts()
 
-        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(productList.length)
-        expect(allProductNames, "Products in cart are not correct").toEqual(productList)
+        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(addProductList.length)
+        expect(allProductNames, "Products in cart are not correct").toEqual(addProductList)
     })
     test("Remove a product to the cart", async ({ page }) => {
-        let AddProductList = ["Sauce Labs Backpack", "Sauce Labs Onesie", "Test.allTheThings() T-Shirt (Red)"];
+       
         await page.goto("https://www.saucedemo.com/inventory.html")
-        for (const product of AddProductList) {
+        for (const product of addProductList) {
             await page.getByText(product).click()
             await page.getByRole("button", { name: "Add to cart" }).click()
             await page.getByRole("button", { name: "Go back Back to products" }).click()
         }
-        let removeProductList = ["Sauce Labs Backpack", "Sauce Labs Onesie"];
+        
         let removeButton = ""
         for (const product of removeProductList) {
             removeButton = product.replaceAll(" ", "-")
@@ -51,14 +53,14 @@ test.describe("Inventory Feature", async () => {
         }
         await page.locator("[data-test='shopping-cart-badge']").click()
         let allProductNames = await page.locator("[data-test='inventory-item-name']").allInnerTexts()
-        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(AddProductList.length - removeProductList.length)
+        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(addProductList.length - removeProductList.length)
         expect(allProductNames, "Products in cart are not correct").not.toEqual(removeProductList)
-        expect(allProductNames, "Products in cart are not correct").not.toEqual(AddProductList)
+        expect(allProductNames, "Products in cart are not correct").not.toEqual(addProductList)
     })
     test("Checkout the products", async ({ page }) => {
-        let AddProductList = ["Sauce Labs Backpack", "Sauce Labs Onesie", "Test.allTheThings() T-Shirt (Red)"];
+        
         await page.goto("https://www.saucedemo.com/inventory.html")
-        for (const product of AddProductList) {
+        for (const product of addProductList) {
             await page.getByText(product).click()
             await page.getByRole("button", { name: "Add to cart" }).click()
             await page.getByRole("button", { name: "Go back Back to products" }).click()
@@ -70,17 +72,17 @@ test.describe("Inventory Feature", async () => {
         await page.getByRole("textbox", { name: "Zip/Postal Code" }).fill("12345")
         await page.getByRole("button", { name: "Continue" }).click()
         let allProductNames = await page.locator("[data-test='inventory-item-name']").allInnerTexts()
-        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(AddProductList.length)
-        expect(allProductNames, "Products in cart are not correct").toEqual(AddProductList)
+        expect(allProductNames, "Count of products in cart is not correct").toHaveLength(addProductList.length)
+        expect(allProductNames, "Products in cart are not correct").toEqual(addProductList)
         await page.getByRole("button", { name: "Finish" }).click()
         await expect(page.getByText("Thank you for your order!")).toBeVisible()
         await page.getByRole("button", { name: "Back Home" }).click()
     })
     test("Logout", async ({ page }) => {
         await page.goto("https://www.saucedemo.com/")
-        let AddProductList = ["Sauce Labs Backpack", "Sauce Labs Onesie", "Test.allTheThings() T-Shirt (Red)"];
+        
         await page.goto("https://www.saucedemo.com/inventory.html")
-        for (const product of AddProductList) {
+        for (const product of addProductList) {
             await page.getByText(product).click()
             await page.getByRole("button", { name: "Add to cart" }).click()
             await page.getByRole("button", { name: "Go back Back to products" }).click()

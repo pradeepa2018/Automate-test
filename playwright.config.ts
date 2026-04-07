@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import { ENV } from './config/env';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -12,7 +12,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,7 +25,7 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: 'https://www.saucedemo.com',
+    baseURL: ENV.BASE_URL,
     headless: false,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
@@ -63,8 +63,8 @@ export default defineConfig({
 
     },
     {
-      name: 'Dashboard',
-      testMatch: 'dash.spec.ts',
+      name: 'Username',
+      testMatch: 'Use.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         channel: 'chrome',

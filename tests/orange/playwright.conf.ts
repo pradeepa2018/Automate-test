@@ -1,5 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-
 export default defineConfig({
   globalSetup: './utils/auth.setup.ts',
   testDir: './tests',
