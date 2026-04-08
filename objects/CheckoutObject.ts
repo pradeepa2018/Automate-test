@@ -1,0 +1,7 @@
+export const BTN_CHECKOUT = "Checkout"
+export const TXT_FIRST_NAME = "Firstname"
+export const TXT_LAST_NAME = "Lastnmae"
+export const TXT_ZIP_CODE = "Zip/Postal code"
+export const BTN_CONTINUE = "continue"
+export const BTN_FINISH = "Finish"
+export const BTN_BACK_HOME = "Back Home"

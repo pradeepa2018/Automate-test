@@ -1,12 +1,12 @@
 import { Locator, Page } from "@playwright/test";
 import { DDL_SORTING,LBL_ITEM_PRICE } from "../objects/inventoryObjects";
+import { error } from "node:console";
 
 export class Inventory {
     readonly page: Page;
     readonly ddlSorting: Locator;
     readonly lblItemPrice: Locator;
-
-    constructor(page: Page) {
+constructor(page: Page) {
         this.page = page;
         this.ddlSorting = page.locator(DDL_SORTING)
         this.lblItemPrice = page.locator(LBL_ITEM_PRICE)
@@ -50,4 +50,17 @@ export class Inventory {
         await this.page.locator("[data-test='shopping-cart-badge']").click()
         return this
     }
+    async removeProducts(productList : string[]){
+        let removeButton = ""
+                for (const product of productList) {
+                    removeButton = product.replaceAll(" ", "-")
+                    removeButton = removeButton.toLowerCase();
+                    console.log(removeButton);
+                    await this.page.locator(`[data-test="remove-${removeButton}"]`).click()
+    }
+    if(removeButton ==""){
+        throw new Error("No products to remove")
+    }
+}
+
 }
