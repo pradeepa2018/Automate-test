@@ -1,4 +1,86 @@
+import path from 'path';
+import dotenv from 'dotenv';
 import { defineConfig, devices } from '@playwright/test';
+dotenv.config({ path: './config/.env.orangehrm' });
+
+const envFile = path.resolve(__dirname, 'config/.env.orangehrm');
+console.log('Loading env from:', envFile);
+
+const result = dotenv.config({ path: envFile, override: true });
+console.log('dotenv result:', result);
+console.log('BASE_URL:', process.env.BASE_URL);
+console.log('USERNAME:', process.env.USERNAME);
+console.log('__dirname:', __dirname);
+if (result.error || !process.env.BASE_URL) {
+  throw new Error(`Failed to load .env.orangehrm: ${result?.error?.message}`);
+}
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing ${name} in ${envFile}`);
+  }
+  return value;
+}
+
+export default defineConfig({
+  testDir: './tests',
+  fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 1 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  use: {
+    baseURL: requireEnv('BASE_URL'),
+    headless: process.env.HEADLESS === 'true',
+    screenshot: 'only-on-failure',
+    trace: 'on-first-retry',
+    video: 'retain-on-failure'
+  },
+  projects: [
+    {
+      name: 'Login',
+      testMatch: '**/login.spec.ts',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    },
+    {
+      name: 'Username',
+      testMatch: '**/Use.spec.ts',
+      use: { ...devices['Desktop Chrome'], channel: 'chrome', storageState: 'state.json' },
+      dependencies: ['Login']
+    },
+  ],
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*import { defineConfig, devices } from '@playwright/test';
 import { ENV } from './config/env';
 /**
  * Read environment variables from file.
@@ -11,33 +93,33 @@ import { ENV } from './config/env';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+/*export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: false,
+  //fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+  //forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0,
+ // retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+ // workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  //reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
+  /*use: {
     baseURL: ENV.BASE_URL,
     headless: false,
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
     video: 'retain-on-failure'
-  },
+  },*/
 
-  projects: [
+  /*projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-],
+    },//
+],//
   //use: {
     /* Base URL to use in actions like await page.goto(''). */
     // baseURL: 'http://localhost:3000',
@@ -102,4 +184,6 @@ export default defineConfig({
   //   reuseExistingServer: !process.env.CI,
   // },
 
-});
+//});
+
+
