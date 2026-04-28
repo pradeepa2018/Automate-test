@@ -32,7 +32,7 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: requireEnv('BASE_URL'),
-    headless: process.env.HEADLESS === 'true',
+    headless: process.env.CI === 'true' || process.env.HEADLESS !== 'false',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
     video: 'retain-on-failure'
