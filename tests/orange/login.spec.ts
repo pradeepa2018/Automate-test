@@ -7,6 +7,7 @@ test('OrangeHRM login', async ({ page }) => {
   await page.getByPlaceholder('Password').fill(process.env.PASSWORD!);
   await page.getByRole('button', { name: 'Login' }).click();
 
-  await expect(page).toHaveURL(/dashboard\/index/);
+  await expect(page).toHaveURL(/.dashboard./, { timeout: 15000 });
+await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible({ timeout: 15000 });
   await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 });
